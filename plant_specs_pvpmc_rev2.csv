@@ -10,5 +10,8 @@ Variable:,unit_id,unit_name,other_name,owner_name,offtaker_name,asset_type,cod,l
 ,40,Fixed 2P twin,,,,inverter,,32.5,-83.5,100,fixed,180,20,,,,,0.642,1.35,1,crystalline_half-cut,FALSE,,portrait,2,0.1,-0.0037,,1,6.25,,,,,,,,non-linear_simple_twin_module,26,,,,haydavies
 ,41,Fixed 2P twin - inv2,,,,inverter,,32.5,-83.5,100,fixed,180,20,,,,,0.642,1.35,1,crystalline_half-cut,FALSE,,portrait,2,0.1,-0.0037,,1,6.25,,,,,,,,non-linear_simple_twin_module,26,,,,haydavies
 ,50,Fixed 2P 72 cell,,,,inverter,,31,-81.5,20,fixed,180,16,,,,,0.661,1.35,1,crystalline,FALSE,,portrait,2,0.1,-0.0031,,1,5.95,,,,,,,,non-linear_simple,12,,,,haydavies
+,51,Fixed 2P 72 cell - inv2,,,,inverter,,31,-81.5,20,fixed,180,16,,,,,0.661,1.35,1,crystalline,FALSE,,portrait,2,0.1,-0.0031,,1,5.95,,,,,,,,non-linear_simple,12,,,,haydavies
+,60,Fixed thin film,,,,inverter,,32.5,-116,,fixed,180,25,,,,,0.562,1.2,1,thin-film,FALSE,,landscape,4,0.1,-0.0025,,1,,,,,,,,,linear,1,,,,haydavies
+,61,Fixed thin film - inv2,,,,inverter,,32.5,-116,,fixed,180,25,,,,,0.562,1.2,1,thin-film,FALSE,,landscape,4,0.1,-0.0025,,1,,,,,,,,,linear,1,,,,haydavies
 ,9069,Simon Solar,Simon,,,plant,,33.6762,-83.676,330,fixed,180,20,,,,,0.606060606,38687.04,30000,crystalline,FALSE,,portrait,2,0.1,-0.0045,,1,6.6,,,,,39,,,non-linear_simple,12,,,,haydavies
 ,9068,SR_CO,SR Kersey,,,plant,,40.3864,-104.5512,1407,single-axis,,,180,0,FALSE,45,0.354285714,4738,3500,thin-film,FALSE,,landscape,4,0.1,-0.003,,1,7,,1910,,,2,,,linear,1,,,,haydavies
