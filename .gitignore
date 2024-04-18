@@ -1,2 +1,4 @@
 credentials/*
 .vscode/*
+**/.ipynb_checkpoints/
+
