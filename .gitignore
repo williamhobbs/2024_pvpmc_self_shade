@@ -1,2 +1,6 @@
 credentials/*
 .vscode/*
+**/.ipynb_checkpoints/
+venv/
+.gitattributes
+
