@@ -127,6 +127,9 @@ def plant_power_with_shade_losses(
     if pd.isna(backtrack_fraction) and backtrack==True:
         backtrack_fraction = 1.0 # default if no value provided
 
+    if backtrack_fraction==0:
+        backtrack=False # switch to truetracking to avoid divide by zero 
+
     eta_inv_nom = 0.98
 
     times = resource_data.index 
