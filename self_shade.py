@@ -242,11 +242,11 @@ def plant_power_with_shade_losses(
             shade_loss = fs * (1 - fd)
         elif shade_loss_model == 'non-linear_simple' or shade_loss_model == 'non-linear_simple_twin_module':
             shade_loss = non_linear_shade(n_cells_up, fs, fd)
-        t_cell = pvlib.temperature.faiman(
-            poa_back_total_with_direct_shade+poa_front_total_with_direct_shade,
-            resource_data.temp_air.values, resource_data.wind_speed.values)
-        t_cell = np.array([pvlib.temperature.prilliman(pd.Series(t_cell[n], index=times), resource_data.wind_speed).values
-                        for n in range(eff_row_side_num_mods)])
+        # t_cell = pvlib.temperature.faiman(
+        #     poa_back_total_with_direct_shade+poa_front_total_with_direct_shade,
+        #     resource_data.temp_air.values, resource_data.wind_speed.values)
+        # t_cell = np.array([pvlib.temperature.prilliman(pd.Series(t_cell[n], index=times), resource_data.wind_speed).values
+        #                 for n in range(eff_row_side_num_mods)])
 
         # adjust irradiance based on modeled shade loss, include bifaciality
         poa_back_effective = bifaciality * (1 - shade_loss) * poa_back_total_without_direct_shade.values
