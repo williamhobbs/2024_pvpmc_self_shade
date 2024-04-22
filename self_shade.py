@@ -80,6 +80,8 @@ def plant_power_with_shade_losses(
     bifaciality=0.8,
     surface_tilt_timeseries=pd.Series([]),
     surface_azimuth_timeseries=pd.Series([]),
+    use_measured_poa=False,
+    use_measured_temp_module=False,
     **kwargs,
     ):
 
@@ -99,6 +101,13 @@ def plant_power_with_shade_losses(
         (optional) custom timeseries of the azimuth of the rotated panel, 
         determined by projecting the vector normal to the panel's surface to 
         the earth's surface. [degrees]
+    use_measured_poa : bool, default False
+        If True, used measure POA data from ``resource_data`` (must have 
+        column name 'poa').
+    use_measured_temp_module: bool, default False
+        If True, use measured back of module temperature from ``resource_data``
+        (must have column name 'temp_module') in place of modeled cell
+        temperature. 
 
     Returns
     -------
@@ -201,11 +210,14 @@ def plant_power_with_shade_losses(
     # work backwards to unshaded direct irradiance for the whole array:
     poa_front_direct_unshaded = irrad_inf_sh['poa_front_direct'] / (1-fs_array)
 
-    # total poa on the front, but without direct shade impacts (keeping diffuse impacts from infinite_sheds)
-    poa_front_total_without_direct_shade = irrad_inf_sh['poa_front_diffuse'] + poa_front_direct_unshaded
-    
-    # set zero POA to nan to avoid divide by zero warnings
-    poa_front_total_without_direct_shade.replace(0, np.nan, inplace=True)
+    if use_measured_poa==True:
+        poa_front_total_without_direct_shade = resource_data.poa
+    else:
+        # total poa on the front, but without direct shade impacts (keeping diffuse impacts from infinite_sheds)
+        poa_front_total_without_direct_shade = irrad_inf_sh['poa_front_diffuse'] + poa_front_direct_unshaded
+        
+        # set zero POA to nan to avoid divide by zero warnings
+        poa_front_total_without_direct_shade.replace(0, np.nan, inplace=True)
 
     # shaded fraction for each course/string going up the row
     fs = shade_fractions(fs_array, eff_row_side_num_mods)
@@ -220,15 +232,18 @@ def plant_power_with_shade_losses(
     elif shade_loss_model == 'non-linear_simple' or shade_loss_model == 'non-linear_simple_twin_module':
         shade_loss = non_linear_shade(n_cells_up, fs, fd)
 
-    # steady state cell temperature - faiman is much faster than fuentes, simpler than sapm
-    t_cell = pvlib.temperature.faiman(
-        poa_front_total_with_direct_shade, resource_data.temp_air.values, resource_data.wind_speed.values)
+    if use_measured_temp_module==True:
+        t_cell = resource_data.temp_module
+    else:
+        # steady state cell temperature - faiman is much faster than fuentes, simpler than sapm
+        t_cell = pvlib.temperature.faiman(
+            poa_front_total_with_direct_shade, resource_data.temp_air.values, resource_data.wind_speed.values)
 
-    # transient cell temperature, since we may be working with intervals shorter than 20 minutes
-    # prilliman() cannot be broadcast along 2nd dimension
-    # and it requires a series with a datetimeindex - would recommend adding times as an argument or allowing dataframe
-    t_cell = np.array([pvlib.temperature.prilliman(pd.Series(t_cell[n], index=times), resource_data.wind_speed).values
-                       for n in range(eff_row_side_num_mods)])
+        # transient cell temperature, since we may be working with intervals shorter than 20 minutes
+        # prilliman() cannot be broadcast along 2nd dimension
+        # and it requires a series with a datetimeindex - would recommend adding times as an argument or allowing dataframe
+        t_cell = np.array([pvlib.temperature.prilliman(pd.Series(t_cell[n], index=times), resource_data.wind_speed).values
+                        for n in range(eff_row_side_num_mods)])
 
     # adjust irradiance based on modeled shade loss
     poa_effective = (1 - shade_loss) * poa_front_total_without_direct_shade.values
