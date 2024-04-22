@@ -76,6 +76,8 @@ def plant_power_with_shade_losses(
     row_side_num_mods=pd.NA,
     row_height_center=pd.NA,
     row_pitch=pd.NA,
+    bifacial=False,
+    bifaciality=0.8,
     surface_tilt_timeseries=pd.Series([]),
     surface_azimuth_timeseries=pd.Series([]),
     **kwargs,
@@ -176,7 +178,7 @@ def plant_power_with_shade_losses(
         albedo = resource_data.albedo,
         model = default_site_transposition_model,
         dni_extra = dni_extra,
-        # TODO: add bifaciliaty later if needed...
+        bifaciality = bifaciality,
     )
 
     # set the "effective" number of modules on the side of each row
@@ -227,6 +229,49 @@ def plant_power_with_shade_losses(
 
     # adjust irradiance based on modeled shade loss
     poa_effective = (1 - shade_loss) * poa_front_total_without_direct_shade.values
+
+    if bifacial==True: # do the same as for front, now for the back
+        # shaded fraction for the whole array (all courses/strings in a row)
+        fs_array_back = irrad_inf_sh['shaded_fraction_back']
+
+        # work backwards to unshaded direct irradiance for the whole array:
+        poa_back_direct_unshaded = irrad_inf_sh['poa_back_direct'] / (1-fs_array_back)
+
+        # total poa on the back, but without direct shade impacts (keeping diffuse impacts from infinite_sheds)
+        poa_back_total_without_direct_shade = irrad_inf_sh['poa_back_diffuse'] + poa_back_direct_unshaded
+        
+        # set zero POA to nan to avoid divide by zero warnings
+        poa_back_total_without_direct_shade.replace(0, np.nan, inplace=True)
+
+        # shaded fraction for each course/string going up the row
+        fs_back = shade_fractions(fs_array_back, eff_row_side_num_mods)
+        # total POA on the back *with* direct shade impacts for each course/string
+        poa_back_total_with_direct_shade = ((1-fs_back) * poa_back_direct_unshaded.values) + irrad_inf_sh['poa_back_diffuse'].values
+        # diffuse fraction for each course/string
+        fd = irrad_inf_sh['poa_back_diffuse'].values / poa_back_total_without_direct_shade.values
+
+        # calculate shade loss for each course/string
+        if shade_loss_model == 'linear':
+            shade_loss = fs * (1 - fd)
+        elif shade_loss_model == 'non-linear_simple' or shade_loss_model == 'non-linear_simple_twin_module':
+            shade_loss = non_linear_shade(n_cells_up, fs, fd)
+
+        # steady state cell temperature - faiman is much faster than fuentes, simpler than sapm
+        t_cell = pvlib.temperature.faiman(
+            poa_back_total_with_direct_shade+poa_front_total_with_direct_shade,
+            resource_data.temp_air.values, resource_data.wind_speed.values)
+
+        # transient cell temperature, since we are working with intervals shorter than 20 minutes
+        # prilliman() cannot be broadcast along 2nd dimension
+        # and it requires a series with a datetimeindex - would recommend adding times as an argument or allowing dataframe
+        t_cell = np.array([pvlib.temperature.prilliman(pd.Series(t_cell[n], index=times), resource_data.wind_speed).values
+                        for n in range(eff_row_side_num_mods)])
+
+        # adjust irradiance based on modeled shade loss
+        poa_back_effective = bifaciality * (1 - shade_loss) * poa_back_total_without_direct_shade.values
+
+        # combine front and back effective POA
+        poa_effective = poa_effective + poa_back_effective
 
     # PVWatts dc power
     pdc_shaded = pvlib.pvsystem.pvwatts_dc(
