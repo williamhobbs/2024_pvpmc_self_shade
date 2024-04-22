@@ -76,6 +76,8 @@ def plant_power_with_shade_losses(
     row_side_num_mods=pd.NA,
     row_height_center=pd.NA,
     row_pitch=pd.NA,
+    surface_tilt_timeseries=pd.Series([]),
+    surface_azimuth_timeseries=pd.Series([]),
     **kwargs,
     ):
 
@@ -88,6 +90,13 @@ def plant_power_with_shade_losses(
         timeseries weather/resource data with the same format as is returned by 
         pvlib.iotools.get* functions
     [long list of additional arguments defining a plant based on [1]]
+    surface_tilt_timeseries : pandas.DataFrame
+        (optional) custom timeseries of the angle between the panel surface and 
+        the earth surface, accounting for panel rotation. [degrees]
+    surface_azimuth_timeseries : pandas.DataFrame
+        (optional) custom timeseries of the azimuth of the rotated panel, 
+        determined by projecting the vector normal to the panel's surface to 
+        the earth's surface. [degrees]
 
     Returns
     -------
@@ -123,28 +132,32 @@ def plant_power_with_shade_losses(
     solar_position = loc.get_solarposition(times)
 
     # surface tilt and azimuth
-    if mount_type == 'single-axis':
-        # modify tracker gcr if needed
-        if backtrack==True:
-            gcr_tracker = gcr * backtrack_fraction
-        else:
-            gcr_tracker = gcr
+    if surface_tilt_timeseries.empty | surface_azimuth_timeseries.empty:
+        if mount_type == 'single-axis':
+            # modify tracker gcr if needed
+            if backtrack==True:
+                gcr_tracker = gcr * backtrack_fraction
+            else:
+                gcr_tracker = gcr
 
-        # tracker orientation angles
-        singleaxis_kwargs = dict(apparent_zenith=solar_position.apparent_zenith,
-                                apparent_azimuth=solar_position.azimuth,
-                                axis_tilt=axis_tilt,
-                                axis_azimuth=axis_azimuth,
-                                backtrack=backtrack,
-                                gcr=gcr_tracker,
-                                )
-        orientation = pvlib.tracking.singleaxis(max_angle=max_tracker_angle,
-                                                **singleaxis_kwargs)
-        surface_tilt = orientation.surface_tilt.fillna(0)
-        surface_azimuth = orientation.surface_azimuth.fillna(0)
-    elif mount_type == 'fixed':
-        surface_tilt = float(fixed_tilt)
-        surface_azimuth = float(fixed_azimuth)
+            # tracker orientation angles
+            singleaxis_kwargs = dict(apparent_zenith=solar_position.apparent_zenith,
+                                    apparent_azimuth=solar_position.azimuth,
+                                    axis_tilt=axis_tilt,
+                                    axis_azimuth=axis_azimuth,
+                                    backtrack=backtrack,
+                                    gcr=gcr_tracker,
+                                    )
+            orientation = pvlib.tracking.singleaxis(max_angle=max_tracker_angle,
+                                                    **singleaxis_kwargs)
+            surface_tilt = orientation.surface_tilt.fillna(0)
+            surface_azimuth = orientation.surface_azimuth.fillna(0)
+        elif mount_type == 'fixed':
+            surface_tilt = float(fixed_tilt)
+            surface_azimuth = float(fixed_azimuth)
+    else:
+        surface_tilt = surface_tilt_timeseries
+        surface_azimuth = surface_azimuth_timeseries
 
     # dni
     dni_extra = pvlib.irradiance.get_extra_radiation(resource_data.index)
