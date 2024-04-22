@@ -3,4 +3,5 @@ credentials/*
 **/.ipynb_checkpoints/
 venv/
 .gitattributes
-
+__pycache__/
+~$*
