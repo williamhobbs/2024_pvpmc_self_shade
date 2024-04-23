@@ -66,7 +66,7 @@ def plant_power_with_shade_losses(
     shade_loss_model,
     default_site_transposition_model='haydavies',
     backtrack=True,
-    backtrack_fraction=pd.NA,
+    backtrack_fraction=1,
     max_tracker_angle=pd.NA,
     axis_tilt=pd.NA,
     axis_azimuth=pd.NA,
@@ -132,9 +132,6 @@ def plant_power_with_shade_losses(
 
     if pd.isna(row_pitch):
         row_pitch = 2 / gcr # default if no value provided
-    
-    if pd.isna(backtrack_fraction) and backtrack==True:
-        backtrack_fraction = 1.0 # default if no value provided
 
     if backtrack_fraction==0:
         backtrack=False # switch to truetracking to avoid divide by zero 
