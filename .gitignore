@@ -5,3 +5,4 @@ venv/
 __pycache__/
 ~$*
 /credentials/nrel_api_key_details.txt
+/notes/*
