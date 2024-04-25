@@ -78,6 +78,7 @@ def plant_power_with_shade_losses(
     row_pitch=pd.NA,
     bifacial=False,
     bifaciality=0.8,
+    gcr_backtrack_setting=pd.NA,
     surface_tilt_timeseries=pd.Series([]),
     surface_azimuth_timeseries=pd.Series([]),
     use_measured_poa=False,
@@ -119,7 +120,7 @@ def plant_power_with_shade_losses(
 
     References
     ----------
-    .. [1] William Hobbs, pv-plant-specification-rev3.0.csv, 
+    .. [1] William Hobbs, pv-plant-specification-rev4.csv, 
        https://github.com/williamhobbs/pv-plant-specifications
     """
 
@@ -136,6 +137,9 @@ def plant_power_with_shade_losses(
     if backtrack_fraction==0:
         backtrack=False # switch to truetracking to avoid divide by zero 
 
+    if pd.isna(gcr_backtrack_setting):
+        gcr_backtrack_setting = gcr
+
     eta_inv_nom = 0.98
 
     times = resource_data.index 
@@ -147,9 +151,9 @@ def plant_power_with_shade_losses(
         if mount_type == 'single-axis':
             # modify tracker gcr if needed
             if backtrack==True:
-                gcr_tracker = gcr * backtrack_fraction
+                gcr_tracker = gcr_backtrack_setting * backtrack_fraction
             else:
-                gcr_tracker = gcr
+                gcr_tracker = gcr_backtrack_setting
 
             # tracker orientation angles
             singleaxis_kwargs = dict(apparent_zenith=solar_position.apparent_zenith,
