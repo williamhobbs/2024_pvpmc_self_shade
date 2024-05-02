@@ -79,8 +79,8 @@ def plant_power_with_shade_losses(
     bifacial=False,
     bifaciality=0.8,
     gcr_backtrack_setting=pd.NA,
-    surface_tilt_timeseries=pd.Series([]),
-    surface_azimuth_timeseries=pd.Series([]),
+    surface_tilt_timeseries=pd.Series([], dtype='float64'),
+    surface_azimuth_timeseries=pd.Series([], dtype='float64'),
     use_measured_poa=False,
     use_measured_temp_module=False,
     **kwargs,
@@ -139,6 +139,12 @@ def plant_power_with_shade_losses(
 
     if pd.isna(gcr_backtrack_setting):
         gcr_backtrack_setting = gcr
+    
+    while default_site_transposition_model not in ['haydavies','isotropic']:
+        print('pvlib.bifacial.infinite_sheds does not currently accept the ' + 
+              default_site_transposition_model + ' model.')
+        print('using isotropic instead.')
+        default_site_transposition_model = 'isotropic'
 
     eta_inv_nom = 0.98
 
