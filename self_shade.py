@@ -143,8 +143,8 @@ def plant_power_with_shade_losses(
     while default_site_transposition_model not in ['haydavies','isotropic']:
         print('pvlib.bifacial.infinite_sheds does not currently accept the ' + 
               default_site_transposition_model + ' model.')
-        print('using isotropic instead.')
-        default_site_transposition_model = 'isotropic'
+        print('using haydavies instead.')
+        default_site_transposition_model = 'haydavies'
 
     eta_inv_nom = 0.98
 
