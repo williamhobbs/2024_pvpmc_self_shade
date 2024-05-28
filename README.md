@@ -3,6 +3,7 @@
 __UPDATE - 2024-05-28b:__ Added IAM (for all modules) and spectral modifier (only for CdTe). This seems to give a slightly better fit to most observations. 
 
 For fractional backtracking with 2P twin modules, adding IAM changes the results - fractional backtracking ends up looking best, and even truetracking looks slightly better than full backtracking. All cases are within about 0.2% of eachother, so the impact is relatively small. 
+
 ------
 
 ------
