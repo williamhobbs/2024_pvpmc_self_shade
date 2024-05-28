@@ -1,4 +1,9 @@
 # 2024_pvpmc_self_shade
+------
+__UPDATE - 2024-05-28b:__ Added IAM (for all modules) and spectral modifier (only for CdTe). This seems to give a slightly better fit to most observations. 
+
+For fractional backtracking with 2P twin modules, adding IAM changes the results - fractional backtracking ends up looking best, and even truetracking looks slightly better than full backtracking. All cases are within about 0.2% of eachother, so the impact is relatively small. 
+------
 
 ------
 __UPDATE - 2024-05-28:__ An issue was found with the obeservation data from plant 20/21. This data and the plant specs were updated. This resulted in the `haydavies` model looking better than `isotropic`, so many of the examples for this plant and the others were updated. This results in the notebooks will now be slightly different from what was presented at PVPMC. The presentation files _have not been updated_. 

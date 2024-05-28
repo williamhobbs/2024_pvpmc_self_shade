@@ -83,6 +83,7 @@ def plant_power_with_shade_losses(
     surface_azimuth_timeseries=pd.Series([], dtype='float64'),
     use_measured_poa=False,
     use_measured_temp_module=False,
+    cell_type='crystalline',
     **kwargs,
     ):
 
@@ -216,6 +217,28 @@ def plant_power_with_shade_losses(
 
     # work backwards to unshaded direct irradiance for the whole array:
     poa_front_direct_unshaded = irrad_inf_sh['poa_front_direct'] / (1-fs_array)
+
+    # add iam
+    aoi = pvlib.irradiance.aoi(surface_tilt, surface_azimuth, solar_position.zenith, solar_position.azimuth)
+    iam = pvlib.iam.physical(aoi)
+    poa_front_direct_unshaded = poa_front_direct_unshaded * iam
+
+    # spectral modifier for cdte
+    if cell_type == 'thin-film_cdte':
+        airmass = loc.get_airmass(solar_position=solar_position)
+        if 'precipitable_water' not in resource_data.columns:
+            if ('temp_air' in resource_data.columns) & ('relative_humidity' in resource_data.columns):
+                resource_data.precipitable_water = pvlib.atmosphere.gueymard94_pw(
+                    temp_air=resource_data.temp_air, 
+                    relative_humidity=resource_data.relative_humidity)
+            else:
+                resource_data['precipitable_water'] = 1
+        spectral_modifier = pvlib.spectrum.spectral_factor_firstsolar(
+            precipitable_water=resource_data.precipitable_water,
+            airmass_absolute=airmass.airmass_absolute,
+            module_type='cdte', 
+        )
+        poa_front_direct_unshaded = poa_front_direct_unshaded * spectral_modifier
 
     if use_measured_poa==True:
         poa_front_total_without_direct_shade = resource_data.poa
