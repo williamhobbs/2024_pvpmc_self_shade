@@ -6,7 +6,7 @@ Variable:,unit_id,unit_name,other_name,owner_name,offtaker_name,asset_type,cod,l
 ,30,Fixed 2P 72 cell SW,,,,inverter,,31.5,-84,50,fixed,185,18,,,,,,0.66,,1.3,1,crystalline,FALSE,,portrait,2,0.1,-0.0035,,1,5.95,,,,,,,,non-linear_simple,12,,,,perez-driesse
 ,31,Fixed 2P 72 cell SW - inv2,,,,inverter,,31.5,-84,50,fixed,185,18,,,,,,0.66,,1.3,1,crystalline,FALSE,,portrait,2,0.1,-0.0035,,1,5.95,,,,,,,,non-linear_simple,12,,,,perez-driesse
 ,10,Fixed thin film SW,,,,inverter,,32.5,-84.5,200,fixed,197,25,,,,,,0.555,,1.45,1,thin-film,FALSE,,landscape,4,0.12,-0.0034,,1,,,,,,,,,linear,1,,,,perez-driesse
-,20,Tracking thin film,,,,inverter,,32.5,-84.5,200,single-axis,,,180,0,FALSE,,45,0.495,,1.25,1,thin-film,FALSE,,landscape,4,0.1,-0.0034,,1,,,,,,,,,linear,1,,,,perez-driesse
+,20,Tracking thin film,,,,inverter,,32.5,-84.5,200,single-axis,,,180,0,FALSE,,45,0.47,,1.25,1,thin-film,FALSE,,landscape,4,0.1,-0.0034,,1,,,,,,,,,linear,1,,,,perez-driesse
 ,40,Fixed 2P twin,,,,inverter,,32.5,-83.5,100,fixed,180,20,,,,,,0.642,,1.35,1,crystalline_half-cut,FALSE,,portrait,2,0.1,-0.0037,,1,6.25,,,,,,,,non-linear_simple_twin_module,24,,,,perez-driesse
 ,41,Fixed 2P twin - inv2,,,,inverter,,32.5,-83.5,100,fixed,180,20,,,,,,0.642,,1.35,1,crystalline_half-cut,FALSE,,portrait,2,0.1,-0.0037,,1,6.25,,,,,,,,non-linear_simple_twin_module,24,,,,perez-driesse
 ,50,Fixed 2P 72 cell,,,,inverter,,31,-81.5,20,fixed,180,16,,,,,,0.661,,1.35,1,crystalline,FALSE,,portrait,2,0.1,-0.0031,,1,5.95,,,,,,,,non-linear_simple,12,,,,perez-driesse

@@ -1,5 +1,10 @@
 # 2024_pvpmc_self_shade
 
+------
+__UPDATE - 2024-05-28:__ An issue was found with the obeservation data from plant 20/21. This data and the plant specs were updated. This resulted in the `haydavies` model looking better than `isotropic`, so many of the examples for this plant and the others were updated. This results in the notebooks will now be slightly different from what was presented at PVPMC. The presentation files _have not been updated_. 
+
+------
+
 This repository contains code, data, and supporting files for the 2024 PV Performance Modeling Collaborative (PVPMC) presentation "An approach to modeling linear and non-linear self-shading losses with pvlib" by William B. Hobbs (Southern Company), Kevin S. Anderson (Sandia), Mark A. Mikofski (DNV), and Madison Ghiz (DNV).
 
 You can check out the presentation [PDF](presentation/2024_PVPMC_hobbs_pvlib_self-shade.pdf) or [PPTX](presentation/2024_PVPMC_hobbs_pvlib_self-shade.pptx) files in the [presentation](presentation) folder. 
