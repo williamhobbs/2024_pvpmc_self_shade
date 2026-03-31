@@ -1,6 +1,10 @@
 # 2024_pvpmc_self_shade
 
 ------
+__UPDATE - 2026-03-31:__ A typo was found in [additional_analyses.ipynb](additional_analyses.ipynb) where `'shade_loss_type'` was used when it should be `'shade_loss_model'`. This has no impact for most examples, but causes a major issue with the partial backtracking examples at the end. See [issue #15](https://github.com/williamhobbs/2024_pvpmc_self_shade/issues/15). This has not been corrected yet.
+
+
+------
 __UPDATE - 2024-05-28:__ An issue was found with the obeservation data from plant 20/21. This data and the plant specs were updated. This resulted in the `haydavies` model looking better than `isotropic`, so many of the examples for this plant and the others were updated. This results in the notebooks will now be slightly different from what was presented at PVPMC. The presentation files _have not been updated_. 
 
 ------
